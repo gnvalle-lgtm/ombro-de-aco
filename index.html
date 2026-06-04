@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ombro de Aço – Protocolo 360°</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f12;
+    --surface: #161a20;
+    --card: #1e242c;
+    --accent: #e8431a;
+    --accent2: #ff7c4d;
+    --text: #f0ece6;
+    --muted: #8a8f9a;
+    --border: #2a3040;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  .hero {
+    background: linear-gradient(160deg, #1a0c08 0%, #0d0f12 60%);
+    padding: 36px 20px 28px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    background: radial-gradient(circle, rgba(232,67,26,0.18) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    line-height: 0.95;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .hero-title span { color: var(--accent); }
+  .hero-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 10px;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(232,67,26,0.15);
+    border: 1px solid rgba(232,67,26,0.3);
+    color: var(--accent2);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 12px;
+  }
+
+  .protocols {
+    padding: 20px 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .protocol-card {
+    background: var(--card);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .protocol-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: background 0.2s;
+  }
+  .protocol-header:active { background: rgba(255,255,255,0.03); }
+
+  .protocol-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .protocol-info { flex: 1; min-width: 0; }
+  .protocol-num {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .protocol-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 1px;
+    line-height: 1.1;
+    margin-top: 1px;
+  }
+  .protocol-count {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .chevron {
+    color: var(--muted);
+    font-size: 16px;
+    transition: transform 0.25s;
+    flex-shrink: 0;
+  }
+  .protocol-card.open .chevron { transform: rotate(90deg); }
+
+  .protocol-body {
+    display: none;
+    border-top: 1px solid var(--border);
+  }
+  .protocol-card.open .protocol-body { display: block; }
+
+  .exercise-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 16px;
+    border-bottom: 1px solid rgba(42,48,64,0.5);
+    text-decoration: none;
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+  .exercise-item:last-child { border-bottom: none; }
+  .exercise-item:active { background: rgba(232,67,26,0.06); }
+
+  .ex-num {
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .ex-info { flex: 1; min-width: 0; }
+  .ex-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.2;
+  }
+  .ex-sets {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .yt-btn {
+    width: 34px; height: 34px;
+    background: rgba(232,67,26,0.12);
+    border: 1px solid rgba(232,67,26,0.25);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s, border-color 0.15s;
+    text-decoration: none;
+  }
+  .yt-btn:active {
+    background: rgba(232,67,26,0.25);
+    border-color: rgba(232,67,26,0.5);
+  }
+  .yt-btn svg { width: 16px; height: 16px; }
+
+  .tip-box {
+    margin: 20px 16px 0;
+    background: rgba(232,67,26,0.07);
+    border: 1px solid rgba(232,67,26,0.2);
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .tip-title {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .tip-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .tip-item {
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .tip-label { font-size: 10px; color: var(--muted); margin-bottom: 2px; }
+  .tip-value { font-size: 12px; font-weight: 600; color: var(--text); }
+
+  /* Color per protocol */
+  .p1 .protocol-icon { background: rgba(99,179,237,0.12); }
+  .p2 .protocol-icon { background: rgba(154,117,234,0.12); }
+  .p3 .protocol-icon { background: rgba(232,67,26,0.12); }
+  .p4 .protocol-icon { background: rgba(72,187,120,0.12); }
+  .p5 .protocol-icon { background: rgba(246,173,85,0.12); }
+  .p6 .protocol-icon { background: rgba(236,72,153,0.12); }
+  .p7 .protocol-icon { background: rgba(99,179,237,0.12); }
+
+  .p1 .protocol-name { color: #63b3ed; }
+  .p2 .protocol-name { color: #9a75ea; }
+  .p3 .protocol-name { color: var(--accent2); }
+  .p4 .protocol-name { color: #48bb78; }
+  .p5 .protocol-name { color: #f6ad55; }
+  .p6 .protocol-name { color: #ec4899; }
+  .p7 .protocol-name { color: #63b3ed; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-label">Tire Print · 7 Protocolos</div>
+  <div class="hero-title">OMBRO<br>DE <span>AÇO</span></div>
+  <div class="hero-sub">Toque no exercício → abre o YouTube</div>
+  <div class="hero-badge">🔥 35 exercícios</div>
+</div>
+
+<div class="protocols">
+
+  <!-- P1 -->
+  <div class="protocol-card p1" onclick="toggle(this)">
+    <div class="protocol-header">
+      <div class="protocol-icon">🫁</div>
+      <div class="protocol-info">
+        <div class="protocol-num">Protocolo 1</div>
+        <div class="protocol-name">Mobilidade Escapular</div>
+        <div class="protocol-count">5 exercícios · aquecimento / ativação</div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="protocol-body">
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=wall+slides+shoulder+mobility" target="_blank">
+        <div class="ex-num">1</div>
+        <div class="ex-info">
+          <div class="ex-name">Wall Slides</div>
+          <div class="ex-sets">2–3 sets · 8–12 reps</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=scapula+push+up+exercise" target="_blank">
+        <div class="ex-num">2</div>
+        <div class="ex-info">
+          <div class="ex-name">Scapula Push-Up</div>
+          <div class="ex-sets">2–3 sets · 10–15 reps</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=YTW+exercise+incline+bench+shoulder" target="_blank">
+        <div class="ex-num">3</div>
+        <div class="ex-info">
+          <div class="ex-name">Y-T-W no Banco Inclinado</div>
+          <div class="ex-sets">2–3 sets · 6–8 reps cada posição</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=banded+face+pull+exercise" target="_blank">
+        <div class="ex-num">4</div>
+        <div class="ex-info">
+          <div class="ex-name">Face Pull com Elástico</div>
+          <div class="ex-sets">2–3 sets · 12–15 reps</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=kettlebell+halo+exercise" target="_blank">
+        <div class="ex-num">5</div>
+        <div class="ex-info">
+          <div class="ex-name">Halo com Kettlebell</div>
+          <div class="ex-sets">2 sets · 5–6 voltas por lado</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- P2 -->
+  <div class="protocol-card p2" onclick="toggle(this)">
+    <div class="protocol-header">
+      <div class="protocol-icon">🛡</div>
+      <div class="protocol-info">
+        <div class="protocol-num">Protocolo 2</div>
+        <div class="protocol-name">Estabilidade Rotacional</div>
+        <div class="protocol-count">5 exercícios · acessório leve 2x/sem</div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="protocol-body">
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=cuban+press+dumbbell+rotator+cuff" target="_blank">
+        <div class="ex-num">1</div>
+        <div class="ex-info">
+          <div class="ex-name">Cuban Press com Dumbbell Leve</div>
+          <div class="ex-sets">2–3 sets · 8–10 reps lentas</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=prone+external+rotation+shoulder+dumbbell" target="_blank">
+        <div class="ex-num">2</div>
+        <div class="ex-info">
+          <div class="ex-name">Prone External Rotation</div>
+          <div class="ex-sets">2–3 sets · 10–12 reps por lado</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=side+plank+lateral+raise+dumbbell" target="_blank">
+        <div class="ex-num">3</div>
+        <div class="ex-info">
+          <div class="ex-name">Side Plank + Elevação Lateral</div>
+          <div class="ex-sets">2 sets · 8–10 reps por lado</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=band+external+rotation+standing+shoulder" target="_blank">
+        <div class="ex-num">4</div>
+        <div class="ex-info">
+          <div class="ex-name">Bandeira com Elástico (Rot. Externa)</div>
+          <div class="ex-sets">2–3 sets · 12–15 reps por lado</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=plank+shoulder+taps+exercise" target="_blank">
+        <div class="ex-num">5</div>
+        <div class="ex-info">
+          <div class="ex-name">Plank Shoulder Taps</div>
+          <div class="ex-sets">2–3 sets · 20–30 toques</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- P3 -->
+  <div class="protocol-card p3" onclick="toggle(this)">
+    <div class="protocol-header">
+      <div class="protocol-icon">💪</div>
+      <div class="protocol-info">
+        <div class="protocol-num">Protocolo 3</div>
+        <div class="protocol-name">Força Posterior</div>
+        <div class="protocol-count">5 exercícios · pós treino de empurrão</div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="protocol-body">
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=reverse+fly+dumbbell+rear+delt" target="_blank">
+        <div class="ex-num">1</div>
+        <div class="ex-info">
+          <div class="ex-name">Reverse Fly com Dumbbell</div>
+          <div class="ex-sets">2–3 sets · 12–15 reps</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=bent+over+row+external+rotation+dumbbell" target="_blank">
+        <div class="ex-num">2</div>
+        <div class="ex-info">
+          <div class="ex-name">Bent Over Row com Rot. Externa</div>
+          <div class="ex-sets">2–3 sets · 8–10 reps</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=banded+low+row+resistance+band+exercise" target="_blank">
+        <div class="ex-num">3</div>
+        <div class="ex-info">
+          <div class="ex-name">Elástico em Low Row</div>
+          <div class="ex-sets">2–3 sets · 12–15 reps</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=trap+3+raise+incline+bench+lower+trapezius" target="_blank">
+        <div class="ex-num">4</div>
+        <div class="ex-info">
+          <div class="ex-name">Trap 3 Raise</div>
+          <div class="ex-sets">2–3 sets · 8–10 reps</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=band+pull+apart+isometric+hold+shoulder" target="_blank">
+        <div class="ex-num">5</div>
+        <div class="ex-info">
+          <div class="ex-name">Banded Pull Apart com Isometria</div>
+          <div class="ex-sets">2–3 sets · 12 reps + 2s contração</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- P4 -->
+  <div class="protocol-card p4" onclick="toggle(this)">
+    <div class="protocol-header">
+      <div class="protocol-icon">🌿</div>
+      <div class="protocol-info">
+        <div class="protocol-num">Protocolo 4</div>
+        <div class="protocol-name">Mobilidade Torácica + Ombro</div>
+        <div class="protocol-count">5 exercícios · pré-treino overhead</div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="protocol-body">
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=open+book+stretch+thoracic+rotation" target="_blank">
+        <div class="ex-num">1</div>
+        <div class="ex-info">
+          <div class="ex-name">Open Book Stretch</div>
+          <div class="ex-sets">2 sets · 8–10 reps por lado</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=wall+angels+exercise+shoulder+mobility" target="_blank">
+        <div class="ex-num">2</div>
+        <div class="ex-info">
+          <div class="ex-name">Wall Angels</div>
+          <div class="ex-sets">2–3 sets · 8–10 reps</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=thread+the+needle+stretch+thoracic" target="_blank">
+        <div class="ex-num">3</div>
+        <div class="ex-info">
+          <div class="ex-name">Thread the Needle</div>
+          <div class="ex-sets">2 sets · 8 reps por lado</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=cat+cow+thoracic+spine+extension" target="_blank">
+        <div class="ex-num">4</div>
+        <div class="ex-info">
+          <div class="ex-name">Cat-Cow (ênfase torácica)</div>
+          <div class="ex-sets">2–3 sets · 6–8 reps</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=PVC+pass+through+shoulder+mobility" target="_blank">
+        <div class="ex-num">5</div>
+        <div class="ex-info">
+          <div class="ex-name">PVC Pass Throughs</div>
+          <div class="ex-sets">2–3 sets · 10–12 reps</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- P5 -->
+  <div class="protocol-card p5" onclick="toggle(this)">
+    <div class="protocol-header">
+      <div class="protocol-icon">⚡</div>
+      <div class="protocol-info">
+        <div class="protocol-num">Protocolo 5</div>
+        <div class="protocol-name">Estabilização Dinâmica</div>
+        <div class="protocol-count">5 exercícios · CrossFit / handstand</div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="protocol-body">
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=turkish+get+up+partial+half+TGU" target="_blank">
+        <div class="ex-num">1</div>
+        <div class="ex-info">
+          <div class="ex-name">Turkish Get-Up Parcial</div>
+          <div class="ex-sets">2–3 sets · 4–6 reps por lado</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=bottoms+up+kettlebell+hold+shoulder+stability" target="_blank">
+        <div class="ex-num">2</div>
+        <div class="ex-info">
+          <div class="ex-name">Bottoms Up Kettlebell Hold</div>
+          <div class="ex-sets">2–3 sets · 30–45s por lado</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=overhead+carry+unilateral+kettlebell+walk" target="_blank">
+        <div class="ex-num">3</div>
+        <div class="ex-info">
+          <div class="ex-name">Overhead Carry Unilateral</div>
+          <div class="ex-sets">2 sets · 20–30m por lado</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=kettlebell+windmill+exercise+tutorial" target="_blank">
+        <div class="ex-num">4</div>
+        <div class="ex-info">
+          <div class="ex-name">Windmill com Kettlebell</div>
+          <div class="ex-sets">2–3 sets · 5–6 reps por lado</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=pike+shoulder+taps+exercise" target="_blank">
+        <div class="ex-num">5</div>
+        <div class="ex-info">
+          <div class="ex-name">Pike Shoulder Taps</div>
+          <div class="ex-sets">2–3 sets · 20 toques</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- P6 -->
+  <div class="protocol-card p6" onclick="toggle(this)">
+    <div class="protocol-header">
+      <div class="protocol-icon">🔥</div>
+      <div class="protocol-info">
+        <div class="protocol-num">Protocolo 6</div>
+        <div class="protocol-name">Reforço Funcional</div>
+        <div class="protocol-count">5 exercícios · push/press days</div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="protocol-body">
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=Z+press+dumbbell+floor+seated+shoulder" target="_blank">
+        <div class="ex-num">1</div>
+        <div class="ex-info">
+          <div class="ex-name">DB Z Press</div>
+          <div class="ex-sets">3 sets · 8–10 reps</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=arnold+press+slow+controlled+dumbbell" target="_blank">
+        <div class="ex-num">2</div>
+        <div class="ex-info">
+          <div class="ex-name">Arnold Press Lento</div>
+          <div class="ex-sets">3 sets · 10 reps · cadência 2:1:2</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=push+up+to+downward+dog+exercise" target="_blank">
+        <div class="ex-num">3</div>
+        <div class="ex-info">
+          <div class="ex-name">Push-Up to Down Dog</div>
+          <div class="ex-sets">2–3 sets · 6–10 reps</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=standing+band+press+alternating+resistance+band" target="_blank">
+        <div class="ex-num">4</div>
+        <div class="ex-info">
+          <div class="ex-name">Elástico Rotacional Alternado</div>
+          <div class="ex-sets">2–3 sets · 12 reps (6 por lado)</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=lateral+raise+isometric+hold+dumbbell" target="_blank">
+        <div class="ex-num">5</div>
+        <div class="ex-info">
+          <div class="ex-name">Lateral Raise + Iso Hold</div>
+          <div class="ex-sets">2–3 sets · 10 reps + 10–15s iso</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- P7 -->
+  <div class="protocol-card p7" onclick="toggle(this)">
+    <div class="protocol-header">
+      <div class="protocol-icon">🧘</div>
+      <div class="protocol-info">
+        <div class="protocol-num">Protocolo 7</div>
+        <div class="protocol-name">Prevenção &amp; Reset</div>
+        <div class="protocol-count">5 exercícios · 1x/sem · recovery day</div>
+      </div>
+      <div class="chevron">›</div>
+    </div>
+    <div class="protocol-body">
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=sleeper+stretch+shoulder+rotator+cuff" target="_blank">
+        <div class="ex-num">1</div>
+        <div class="ex-info">
+          <div class="ex-name">Sleeper Stretch</div>
+          <div class="ex-sets">2 sets · 30s por lado</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=passive+bar+hang+shoulder+decompression" target="_blank">
+        <div class="ex-num">2</div>
+        <div class="ex-info">
+          <div class="ex-name">Hanging Hold Passivo na Barra</div>
+          <div class="ex-sets">2 sets · 20–40s</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=band+dislocations+shoulder+mobility+PVC" target="_blank">
+        <div class="ex-num">3</div>
+        <div class="ex-info">
+          <div class="ex-name">Band Dislocations (PVC/Elástico)</div>
+          <div class="ex-sets">2–3 sets · 10–12 reps</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=massage+ball+scapula+wall+myofascial+release" target="_blank">
+        <div class="ex-num">4</div>
+        <div class="ex-info">
+          <div class="ex-name">Massage Ball na Parede</div>
+          <div class="ex-sets">1–2 minutos por lado</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+      <a class="exercise-item" href="https://www.youtube.com/results?search_query=band+pull+apart+eccentric+slow+negative" target="_blank">
+        <div class="ex-num">5</div>
+        <div class="ex-info">
+          <div class="ex-name">Banded Pull Apart Excêntrico 3s</div>
+          <div class="ex-sets">2–3 sets · 10 reps · 3s negativa</div>
+        </div>
+        <div class="yt-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#e8431a" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<div class="tip-box">
+  <div class="tip-title">Como Usar na Semana</div>
+  <div class="tip-grid">
+    <div class="tip-item">
+      <div class="tip-label">Pré-treino</div>
+      <div class="tip-value">P1, P2 ou P4</div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-label">Pós-treino</div>
+      <div class="tip-value">P3, P6 ou P7</div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-label">Frequência</div>
+      <div class="tip-value">2–3x por semana</div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-label">Recovery Day</div>
+      <div class="tip-value">P7 completo</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggle(card) {
+    // Se clicou em um link, não toggle
+    if (event && event.target.closest('a')) return;
+    card.classList.toggle('open');
+  }
+</script>
+</body>
+</html>
